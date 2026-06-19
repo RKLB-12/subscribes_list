@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>Home</title>
+        <link rel="stylesheet" href="/bulma/css/bulma.css">
+        <meta charset="UTF-8">
+    </head>
+
+    <body>
+        <nav class="navbar is-light">
+            <div class="navbar-start">
+                <a class="navbar-item">
+                    <strong>ЛК подписок</strong>
+                </a>
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        <strong th:text="${username}">Username</strong>
+                    </a>
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item" th:href="@{/user/edit-days}">
+                            Изменить кол-во <br>
+                            дней до уведомления
+                        </a>
+
+                        <hr class="navbar-divider">
+                        <form th:action="@{/user/delete}"
+                              method="post"
+                              onsubmit="return confirm('Удалить аккаунт? Все подписки будут удалены без возможности восстановления.')">
+
+                            <input type="hidden"
+                                   th:name="${_csrf.parameterName}"
+                                   th:value="${_csrf.token}">
+
+                            <button class="navbar-item has-text-danger button is-white">
+                                Удалить аккаунт
+                            </button>
+
+                        </form>
+                    </div>
+                </div>
+
+                <div class="navbar-item">
+                    <form th:action="@{/logout}" method="post">
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}">
+
+                        <button class="button is-danger is-light">
+                            Выйти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <section class="section">
+            <div class="columns">
+                <div class="column is-two-thirds">
+                    <div class="level">
+                        <div class="level-left">
+                            <h1 class="title">Подписки</h1>
+                        </div>
+                        <div class="level-right">
+                            <a href="/subscriptions/add">
+                                <button class="button is-primary">
+                                    + Добавить подписку
+                                </button>
+                            </a>
+
+                        </div>
+                    </div>
+
+                    <div th:each="subscription : ${subscriptions}">
+                        <div class="box mb-3">
+                            <h2 class="title is-5">
+                                <span th:text="${subscription.name}"></span>
+                            </h2>
+
+                            <div class="columns">
+                                <div class="column">
+                                    <p><strong>Компания:</strong> <span th:text="${subscription.company}"></span> </p>
+                                    <p><strong>Цена:</strong> <span th:text="${subscription.price}"></span> ₽</p>
+                                    <p><strong>Сайт:</strong> <a th:href="${subscription.website}"
+                                                                       th:text="${subscription.shortWebsite}"
+                                                                       target="_blank">
+                                    </a></p>
+                                </div>
+                                <div class="column">
+                                    <p><strong>Дата начала:</strong> <span th:text="${subscription.startDate}"></span> </p>
+                                    <p><strong>Дата след списания:</strong> <span th:text="${subscription.getNextPaymentDate}"></span> </p>
+                                    <p><strong>Период:</strong> <span th:text="${subscription.periodDays}"></span> дней</p>
+                                </div>
+                            </div>
+
+                            <div class="buttons">
+                                <a th:href="@{'/subscriptions/edit/' + ${subscription.id}}">
+                                    <button class="button is-warning">
+                                        Редактировать
+                                    </button>
+                                </a>
+
+
+                                <form th:action="@{'/subscriptions/delete/' + ${subscription.id}}" method="post">
+                                    <input type="hidden"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}">
+                                    <button class="button is-danger">
+                                        Удалить
+                                    </button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="column">
+                    <h1 class="title">
+                        Уведомления
+                    </h1>
+
+                    <article th:each="notifications : ${notifications}" class="message">
+                        <div class="message-body">
+                            <strong th:text="${notifications.name}">Name</strong>
+                            <p>
+                                Списание через
+                                <span th:text="${notifications.daysUntilPayment}">0</span>
+                                дней
+                            </p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

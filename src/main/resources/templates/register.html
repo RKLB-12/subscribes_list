@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Регистрация</title>
+        <link rel="stylesheet" href="/bulma/css/bulma.css">
+    </head>
+    <body>
+        <section class="section">
+            <div class="container" style="max-width: 450px;">
+                <h1 class="title">Регистрация пользователя</h1>
+                <div class="box">
+                    <form method="post" action="/register">
+                        <input type="hidden"
+                               th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}">
+
+                        <div class="field">
+                            <label class="label">Введите имя/ник</label>
+                            <input class="input" type="text" name="username" required>
+                        </div>
+
+                        <div class="has-text-danger mb-3"
+                             th:if="${error}"
+                             th:text="${error}">
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Придумайте пароль</label>
+                            <input class="input" type="password" name="password" required>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">За сколько дней до списания вас уведомлять?</label>
+                            <input class="input" type="number" name="notificationDays" value="3" required>
+                        </div>
+
+                        <button class="button is-primary" type="submit">
+                            Зарегистрироваться
+                        </button>
+                    </form>
+                </div>
+                <p class="has-text-centered">
+                    У меня есть аккаунт
+                    <a href="/login">Войти</a>
+                </p>
+            </div>
+        </section>
+    </body>
+</html>
